@@ -81,7 +81,6 @@ public class NewsController {
         mv.setViewName("newsisedited");
 
         NewsModifying.modifyNews(news);
-        System.out.println(news.getId());
 
         return mv;
     }

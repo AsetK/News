@@ -12,6 +12,8 @@
     <ctx:annotation-config></ctx:annotation-config>
     <ctx:component-scan base-package="com.epam.news.web.controller"></ctx:component-scan>
 
+    <mvc:annotation-driven/>
+
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix">
             <value>/WEB-INF/</value>
