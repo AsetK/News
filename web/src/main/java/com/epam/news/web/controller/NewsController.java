@@ -2,10 +2,7 @@ package com.epam.news.web.controller;
 
 import com.epam.news.dao.dao.DataBase;
 import com.epam.news.domain.entity.News;
-import com.epam.news.service.service.NewsCreating;
-import com.epam.news.service.service.NewsListViewing;
-import com.epam.news.service.service.NewsModifying;
-import com.epam.news.service.service.NewsViewing;
+import com.epam.news.service.service.*;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -84,5 +81,31 @@ public class NewsController {
 
         return mv;
     }
+
+    @RequestMapping(value = "/deletenews", method = RequestMethod.POST)
+    public ModelAndView deleteNews(@RequestParam("newsId") Long newsId) {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("newsisdeleted");
+
+        NewsDeleting.deleteNews(newsId);
+
+        return mv;
+    }
+
+    @RequestMapping(value = "/deletesignednews", method = RequestMethod.POST)
+    public ModelAndView deleteSignedNews(@RequestParam("newsId[]") Long[] newsId) {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("newsisdeleted");
+
+        System.out.println(newsId.length);
+        for(long id:newsId) {
+            System.out.println(id);
+            NewsDeleting.deleteNews(id);
+        }
+
+        return mv;
+    }
+
+
 
 }

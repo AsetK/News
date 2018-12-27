@@ -22,8 +22,8 @@ public class DataBase {
         newsList.put(news.getId(),news);
     }
 
-    public static synchronized void deleteNews(News news) {
-        newsList.remove(news);
+    public static synchronized void deleteNews(Long newsId) {
+        newsList.remove(newsId);
     }
 
     public static synchronized void modifyNews(News news) {

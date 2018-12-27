@@ -24,5 +24,11 @@
         <tr><td><spring:message code="label.newsBrief"/>    </td>       <td><c:out value="${news.brief}"/>   </td></tr>
         <tr><td><spring:message code="label.newsContent"/>  </td>       <td><c:out value="${news.content}"/>  </td></tr>
     </table>
+    <form action="/editnews" method="post">
+        <button type="submit" name="newsId" value="${news.id}">edit</button>
+    </form>
+    <form action="/deletenews" method="post">
+        <button type="submit" name="newsId" value="${news.id}">delete</button>
+    </form>
 </body>
 </html>

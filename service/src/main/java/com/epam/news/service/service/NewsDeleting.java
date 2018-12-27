@@ -5,7 +5,7 @@ import com.epam.news.domain.entity.News;
 
 public class NewsDeleting {
 
-    public static void deleteNews(News news) {
-        DataBase.deleteNews(news);
+    public static void deleteNews(Long newsId) {
+        DataBase.deleteNews(newsId);
     }
 }
