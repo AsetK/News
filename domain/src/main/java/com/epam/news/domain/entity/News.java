@@ -2,16 +2,23 @@ package com.epam.news.domain.entity;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Date;
 
-
+@Entity
 public class News {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "my_generator")
+    @SequenceGenerator(name = "my_generator", sequenceName = "SEQUENCE1", allocationSize = 1)
     private Long id;
     private String title;
     private String brief;
     private String content;
     @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @Temporal(TemporalType.DATE)
+    @Column(name = "newsdate")
     private Date date;
 
     public Long getId() {
