@@ -1,8 +1,10 @@
 package com.epam.news.web.controller;
 
 import com.epam.news.dao.dao.DataBase;
+import com.epam.news.dao.dao.NewsDAO;
 import com.epam.news.domain.entity.News;
 import com.epam.news.service.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -17,6 +19,9 @@ import java.util.Date;
 @Controller
 public class NewsController {
 
+    @Autowired
+    NewsDAO newsDAO;
+
     @RequestMapping("/newsmanagement")
     public ModelAndView newsManagementPage() {
         ModelAndView mv = new ModelAndView();
@@ -29,7 +34,7 @@ public class NewsController {
     public ModelAndView newsListPage() {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("newslist");
-        mv.addObject("newsList", NewsListViewing.viewNewsList());
+        mv.addObject("newsList", newsDAO.list());
 
         return mv;
     }

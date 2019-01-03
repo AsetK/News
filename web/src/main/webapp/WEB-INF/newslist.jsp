@@ -17,22 +17,22 @@
 <body>
     <h2>News List</h2>
     <c:forEach var="news" items="${newsList}">
-        <fmt:formatDate value="${news.value.date}" pattern="dd/MM/yyyy" var="formattedDate" />
+        <fmt:formatDate value="${news.date}" pattern="dd/MM/yyyy" var="formattedDate" />
         <br>
         <table>
-            <tr><td><spring:message code="label.newsTitle"/>    </td>       <td><c:out value="${news.value.title}"/>   </td></tr>
+            <tr><td><spring:message code="label.newsTitle"/>    </td>       <td><c:out value="${news.title}"/>   </td></tr>
             <tr><td><spring:message code="label.newsDate"/>     </td>       <td><c:out value="${formattedDate}" />    </td></tr>
-            <tr><td><spring:message code="label.newsBrief"/>    </td>       <td><c:out value="${news.value.brief}"/>   </td></tr>
+            <tr><td><spring:message code="label.newsBrief"/>    </td>       <td><c:out value="${news.brief}"/>   </td></tr>
         </table>
 
         <form action="/viewnews" method="post">
-            <button type="submit" name="newsId" value="${news.value.id}">view</button>
+            <button type="submit" name="newsId" value="${news.id}">view</button>
         </form>
         <form action="/editnews" method="post">
-            <button type="submit" name="newsId" value="${news.value.id}">edit</button>
+            <button type="submit" name="newsId" value="${news.id}">edit</button>
         </form>
 
-        <input form="deleteform" type="checkbox" name="newsId[]" value="${news.value.id} ">
+        <input form="deleteform" type="checkbox" name="newsId[]" value="${news.id} ">
     </c:forEach>
 
     <form id="deleteform" action="/deletesignednews" method="post">
