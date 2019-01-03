@@ -10,7 +10,7 @@
   http://www.springframework.org/schema/context/spring-context-2.5.xsd
   ">
     <ctx:annotation-config></ctx:annotation-config>
-    <ctx:component-scan base-package="com.epam.news.web.controller"></ctx:component-scan>
+    <ctx:component-scan base-package="com.epam.news"></ctx:component-scan>
 
     <!-- For @DateTimeFormat -->
     <mvc:annotation-driven/>

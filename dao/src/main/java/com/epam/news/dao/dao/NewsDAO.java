@@ -3,11 +3,11 @@ package com.epam.news.dao.dao;
 import com.epam.news.domain.entity.News;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
+@Repository
 public class NewsDAO {
 
     public void addNews(News news) {

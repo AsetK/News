@@ -1,24 +1,23 @@
 package com.epam.news.web.controller;
 
-import com.epam.news.dao.dao.DataBase;
+
 import com.epam.news.dao.dao.NewsDAO;
 import com.epam.news.domain.entity.News;
-import com.epam.news.service.service.*;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 @Controller
 public class NewsController {
+
+    @Autowired
+    NewsDAO newsDAO;
+
 
     @RequestMapping("/newsmanagement")
     public ModelAndView newsManagementPage() {
@@ -28,14 +27,13 @@ public class NewsController {
         return mv;
     }
 
-    @RequestMapping(value = "/newslistpage",method = RequestMethod.POST)
+    @RequestMapping(value = "/newslistpage", method = RequestMethod.POST)
     public ModelAndView newsListPage() {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("newslist");
 
-        NewsDAO dao = new NewsDAO();
-        mv.addObject("newsList", dao.getAllNews());
-        //mv.addObject("newsList", NewsListViewing.viewNewsList());
+        //NewsDAO dao = new NewsDAO();
+        mv.addObject("newsList", newsDAO.getAllNews());
 
         return mv;
     }
@@ -49,8 +47,7 @@ public class NewsController {
     }
 
     @RequestMapping(value = "/addnews", method = RequestMethod.POST)
-    public ModelAndView createNews(@ModelAttribute("news") News news){
-        //NewsCreating.createNews(news);
+    public ModelAndView createNews(@ModelAttribute("news") News news) {
         NewsDAO dao = new NewsDAO();
         dao.addNews(news);
 
@@ -67,7 +64,6 @@ public class NewsController {
 
         NewsDAO dao = new NewsDAO();
         mv.addObject("news", dao.viewNews(newsId));
-        //mv.addObject("news", NewsViewing.viewNews(newsId));
 
         return mv;
     }
@@ -79,7 +75,6 @@ public class NewsController {
 
         NewsDAO dao = new NewsDAO();
         mv.addObject("news", dao.viewNews(newsId));
-        //mv.addObject("news", NewsViewing.viewNews(newsId));
 
         return mv;
     }
@@ -90,7 +85,6 @@ public class NewsController {
         mv.setViewName("newsisedited");
         NewsDAO dao = new NewsDAO();
         dao.updateNews(news);
-        //NewsModifying.modifyNews(news);
 
         return mv;
     }
@@ -102,7 +96,6 @@ public class NewsController {
 
         NewsDAO dao = new NewsDAO();
         dao.deleteNews(newsId);
-        //NewsDeleting.deleteNews(newsId);
 
         return mv;
     }
@@ -114,14 +107,12 @@ public class NewsController {
 
         NewsDAO dao = new NewsDAO();
 
-        for(long id:newsId) {
+        for (long id : newsId) {
             dao.deleteNews(id);
-            //NewsDeleting.deleteNews(id);
         }
 
         return mv;
     }
-
 
 
 }
