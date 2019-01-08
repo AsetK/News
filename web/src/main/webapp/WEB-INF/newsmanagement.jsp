@@ -24,5 +24,6 @@
     <form action="/addnewspage">
         <button type="submit">Add News</button>
     </form>
+    <a href="/j_spring_security_logout">Logout</a>
 </body>
 </html>

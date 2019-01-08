@@ -18,6 +18,26 @@ public class NewsController {
     @Autowired
     NewsDAO newsDAO;
 
+    @RequestMapping(value = {"/", "/login"})
+    public ModelAndView loginPage(@RequestParam(value = "error", required = false) String error) {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("login");
+
+        if(error != null){
+            mv.addObject("error", "Invalid username or password");
+        }
+
+        return mv;
+    }
+
+    @RequestMapping("/accessdenied")
+    public ModelAndView accessDeniedPage() {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("accessdenied");
+
+        return mv;
+    }
+
 
     @RequestMapping("/newsmanagement")
     public ModelAndView newsManagementPage() {
@@ -32,7 +52,6 @@ public class NewsController {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("newslist");
 
-        //NewsDAO dao = new NewsDAO();
         mv.addObject("newsList", newsDAO.getAllNews());
 
         return mv;
@@ -48,8 +67,8 @@ public class NewsController {
 
     @RequestMapping(value = "/addnews", method = RequestMethod.POST)
     public ModelAndView createNews(@ModelAttribute("news") News news) {
-        NewsDAO dao = new NewsDAO();
-        dao.addNews(news);
+
+        newsDAO.addNews(news);
 
         ModelAndView mv = new ModelAndView();
         mv.setViewName("newsisadded");
@@ -62,8 +81,7 @@ public class NewsController {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("viewnews");
 
-        NewsDAO dao = new NewsDAO();
-        mv.addObject("news", dao.viewNews(newsId));
+        mv.addObject("news", newsDAO.viewNews(newsId));
 
         return mv;
     }
@@ -73,8 +91,7 @@ public class NewsController {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("editnews");
 
-        NewsDAO dao = new NewsDAO();
-        mv.addObject("news", dao.viewNews(newsId));
+        mv.addObject("news", newsDAO.viewNews(newsId));
 
         return mv;
     }
@@ -83,8 +100,8 @@ public class NewsController {
     public ModelAndView saveChanges(@ModelAttribute("news") News news) {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("newsisedited");
-        NewsDAO dao = new NewsDAO();
-        dao.updateNews(news);
+
+        newsDAO.updateNews(news);
 
         return mv;
     }
@@ -94,8 +111,7 @@ public class NewsController {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("newsisdeleted");
 
-        NewsDAO dao = new NewsDAO();
-        dao.deleteNews(newsId);
+        newsDAO.deleteNews(newsId);
 
         return mv;
     }
@@ -105,10 +121,8 @@ public class NewsController {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("newsisdeleted");
 
-        NewsDAO dao = new NewsDAO();
-
         for (long id : newsId) {
-            dao.deleteNews(id);
+            newsDAO.deleteNews(id);
         }
 
         return mv;
