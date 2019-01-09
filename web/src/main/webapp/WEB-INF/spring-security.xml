@@ -13,31 +13,30 @@
         <intercept-url pattern="/addnewspage" access="ROLE_USER"/>
         <csrf disabled="true"></csrf>
 
-        <form-login
-                login-page="/login"
-                login-processing-url="/j_spring_security_check"
-                default-target-url="/newsmanagement"
-                always-use-default-target="true"
-                username-parameter="user_login"
-                password-parameter="user_password"
-                authentication-failure-url="/login?error=true"
-        />
+        <form-login login-page="/login"
+                    login-processing-url="/j_spring_security_check"
+                    default-target-url="/newsmanagement"
+                    always-use-default-target="true"
+                    username-parameter="user_login"
+                    password-parameter="user_password"
+                    authentication-failure-url="/login?error=true"/>
+
         <access-denied-handler error-page="/accessdenied"/>
         <logout logout-success-url="/login" logout-url="/j_spring_security_logout"/>
-        <remember-me remember-me-parameter="spring_security_remember_me"/>
+        <remember-me remember-me-parameter="spring_security_remember_me" token-validity-seconds="86400"/>
     </http>
 
 
     <beans:bean id="passwordEncoder"
             class="org.springframework.security.crypto.password.NoOpPasswordEncoder" factory-method="getInstance"/>
 
-
     <authentication-manager>
         <authentication-provider>
-            <user-service>
+            <!--<user-service>
                 <user name="admin" password="000" authorities="ROLE_ADMIN" />
                 <user name="user" password="111" authorities="ROLE_USER" />
-            </user-service>
+            </user-service>*/-->
+            <jdbc-user-service data-source-ref="dataSource"/>
         </authentication-provider>
     </authentication-manager>
 
