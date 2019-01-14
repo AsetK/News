@@ -20,6 +20,7 @@ public class NewsController {
     @Autowired
     NewsDAO newsDAO;
 
+    /*
     @RequestMapping(value = {"/", "/login"})
     public ModelAndView loginPage(@RequestParam(value = "error", required = false) String error) {
         ModelAndView mv = new ModelAndView();
@@ -39,7 +40,15 @@ public class NewsController {
 
         return mv;
     }
+    */
 
+    @RequestMapping("/")
+    public ModelAndView loginPage() {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("home");
+
+        return mv;
+    }
 
     @RequestMapping("/newsmanagement")
     public ModelAndView newsManagementPage() {
