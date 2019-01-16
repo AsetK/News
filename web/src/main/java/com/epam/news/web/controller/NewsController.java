@@ -43,33 +43,17 @@ public class NewsController {
     */
 
     @RequestMapping("/")
-    public ModelAndView loginPage() {
+    public ModelAndView homePage() {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("home");
 
         return mv;
     }
 
-    @RequestMapping("/newsmanagement")
-    public ModelAndView newsManagementPage() {
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("newsmanagement");
-
-        return mv;
-    }
-
-    @RequestMapping(value = "/newslistpage")
-    public ModelAndView newsListPage() {
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("newslist");
-        mv.addObject("newsList",newsDAO.getAllNews());
-        return mv;
-    }
-    /*
     @RequestMapping(value = "/newslistpage")
     public @ResponseBody List<News> newsListPage() {
         return newsDAO.getAllNews();
-    }*/
+    }
 
     @RequestMapping("/addnewspage")
     public ModelAndView createNewsPage(@ModelAttribute("news") News news) {
@@ -86,24 +70,22 @@ public class NewsController {
         return new ResponseEntity<News>(news, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/viewnews", method = RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public @ResponseBody News viewNewsPOST(@RequestParam("newsId") Long newsId) {
+    @RequestMapping(value = "/viewnews")
+    public @ResponseBody News viewNewsPOST(@RequestBody Long newsId) {
         return newsDAO.viewNews(newsId);
     }
 
+    /*
     @RequestMapping(value = "/viewnews/{newsId}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public @ResponseBody News viewNewsGET(@PathVariable("newsId") Long newsId) {
+    public @ResponseBody
+    News viewNewsGET(@PathVariable("newsId") Long newsId) {
+
         return newsDAO.viewNews(newsId);
-    }
+    }*/
 
-    @RequestMapping(value = "/editnews", method = RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ModelAndView editNews(@RequestParam("newsId") Long newsId) {
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("editnews");
-
-        mv.addObject("news", newsDAO.viewNews(newsId));
-
-        return mv;
+    @RequestMapping(value = "/editnews", method = RequestMethod.POST)
+    public @ResponseBody News editNews(@RequestBody  Long newsId) {
+        return newsDAO.viewNews(newsId);
     }
 
     @RequestMapping(value = "/savechanges", method = RequestMethod.POST)
