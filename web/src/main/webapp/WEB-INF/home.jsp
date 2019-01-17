@@ -1,3 +1,4 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%--
   Created by IntelliJ IDEA.
   User: Asset_Kenezhanov
@@ -62,7 +63,7 @@
                                 '<table>'+
                                     '<tr><td>Title:     </td><td>{{news.title}}                      </td></tr>'+
                                     '<tr><td>Brief:     </td><td>{{news.brief}}                      </td></tr>'+
-                                    '<tr><td>Date:      </td><td>{{news.date | date:"dd/MM/yyyy"}}   </td></tr>'+
+                                    '<tr><td>Date:      </td><td>{{news.date|date:"dd/MM/yyyy"}}   </td></tr>'+
                                 '</table>',
 
                     controller: "viewnews"
@@ -70,16 +71,24 @@
                 .when("/editnews/:newsId", {
                     template:   '<h2>{{msg}}</h2>'+
                                 '<h2>{{newsId}}</h2>'+
-                                '<form action="">'+
+
+                                '<form action="#!savechanges">'+
                                     '<table>'+
-                                        '<tr><td>Title:     </td><td><input type="text" value= {{news.title}}>                      </td></tr>'+
-                                        '<tr><td>Brief:     </td><td><input type="text" value={{news.brief}} >                     </td></tr>'+
-                                        '<tr><td>Date:      </td><td><input type="text" value={{news.date | date:"dd/MM/yyyy"}}>   </td></tr>'+
+                                        '<tr><td>Title:     </td><td><input type="text" name="title"  value= {{news.title}} >                  </td></tr>'+
+                                        '<tr><td>Brief:     </td><td><input type="text" name="brief"  value={{news.brief}}>                   </td></tr>'+
+                                        '<tr><td>Date:      </td><td><input type="text" name="date"  value={{news.date|date:"dd/MM/yyyy"}}>   </td></tr>'+
                                     '</table>'+
+                                '<button type="submit">Save</button>'+
                                 '</form>',
 
                     controller: "editnews"
-                });
+                })
+                .when("/savechanges", {
+                template:   '<h2>{{msg}}</h2>',
+
+
+                controller: "savechanges"
+            })
         });
 
 
@@ -92,6 +101,7 @@
         app.controller('newsmanagement', function($scope) {
             $scope.msg = "News Management";
         });
+
         app.controller('newslist', function($scope, $http) {
             $http.get('newslistpage').then(
                 function (response) {
@@ -101,6 +111,7 @@
             $scope.msg = "News List";
 
         });
+
         app.controller('viewnews', function($scope, $http, $routeParams) {
             var Json_newsId = angular.toJson($routeParams.newsId);
             $http.post('viewnews', Json_newsId).then(
@@ -110,6 +121,7 @@
             );
             $scope.msg = "News";
         });
+
         app.controller('editnews', function($scope, $http, $routeParams) {
             var Json_newsId = angular.toJson($routeParams.newsId);
             $http.post('viewnews', Json_newsId).then(
@@ -119,7 +131,16 @@
             );
             $scope.msg = "Edit News";
         });
+
+        app.controller('savechanges', function($scope) {
+            $scope.msg = "Saved News";
+
+
+        });
+
+
         app.controller('myCtrl', function($scope) {
+
             $scope.firstName = "John";
             $scope.lastName = "Doe";
             $scope.msg = "News Management";
