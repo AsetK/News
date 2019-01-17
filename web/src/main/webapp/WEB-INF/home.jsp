@@ -16,6 +16,7 @@
 
 <body ng-app="myApp">
 
+
     <div ng-controller="myCtrl">
 
         First Name: <input type="text" ng-model="firstName"><br>
@@ -25,7 +26,7 @@
 
     </div>
 
-    <a href="#!newsmanagement">News Management</a>
+    <a href="#newsmanagement">News Management</a>
 
 
     <div ng-view></div>
@@ -33,14 +34,18 @@
     <script>
         var app = angular.module("myApp", ["ngRoute"]);
 
-        app.config(function($routeProvider) {
+        app
+            .config(function($locationProvider) {
+                $locationProvider.hashPrefix('');
+            })
+            .config(function($routeProvider) {
             $routeProvider
                 .when("/newsmanagement", {
                     template:   '<h2>{{msg}}</h2>'+
 
-                                '<a href="#!newslist">News List</a> <br> <br>'+
+                                '<a href="#newslist">News List</a> <br> <br>'+
 
-                                '<a href="#!newslist">Add News</a>',
+                                '<a href="#newslist">Add News</a>',
 
                     controller: "newsmanagement"
                 })
@@ -52,7 +57,7 @@
                                         '<tr><td>Brief:     </td><td>{{news.brief}}                      </td></tr>'+
                                         '<tr><td>Date:      </td><td>{{news.date | date:"dd/MM/yyyy"}}   </td></tr>'+
                                     '</table>'+
-                                    '<a href="#!viewnews/{{news.id}}">View News</a>&nbsp&nbsp&nbsp<a href="#!editnews/{{news.id}}">Edit News</a><br><br>'+
+                                    '<a href="#viewnews/{{news.id}}">View News</a>&nbsp&nbsp&nbsp<a href="#editnews/{{news.id}}">Edit News</a><br><br>'+
                                 '</div>',
 
                     controller: "newslist"
@@ -70,21 +75,21 @@
                 })
                 .when("/editnews/:newsId", {
                     template:   '<h2>{{msg}}</h2>'+
-                                '<h2>{{newsId}}</h2>'+
-
-                                '<form action="#!savechanges">'+
                                     '<table>'+
-                                        '<tr><td>Title:     </td><td><input type="text" name="title"  value= {{news.title}} >                  </td></tr>'+
-                                        '<tr><td>Brief:     </td><td><input type="text" name="brief"  value={{news.brief}}>                   </td></tr>'+
-                                        '<tr><td>Date:      </td><td><input type="text" name="date"  value={{news.date|date:"dd/MM/yyyy"}}>   </td></tr>'+
+                                        '<tr><td>Title:     </td><td><input type="text" ng-model="news.title">                  </td></tr>'+
+                                        '<tr><td>Brief:     </td><td><input type="text" ng-model="news.brief">                   </td></tr>'+
+                                        '<tr><td>Date:      </td><td><input type="text" ng-model="news.date">   </td></tr>'+
                                     '</table>'+
-                                '<button type="submit">Save</button>'+
-                                '</form>',
+                                '<button ng-click="save()">Save</button>',
+
 
                     controller: "editnews"
                 })
                 .when("/savechanges", {
-                template:   '<h2>{{msg}}</h2>',
+                template:   '<h2>{{msg}}</h2>'+
+                            '<h2>{{news.title}}</h2>'+
+                            '<h2>{{news.brief}}</h2>'+
+                            '<h2>{{news.date}}</h2>',
 
 
                 controller: "savechanges"
@@ -122,7 +127,7 @@
             $scope.msg = "News";
         });
 
-        app.controller('editnews', function($scope, $http, $routeParams) {
+        app.controller('editnews', function($scope, $http, $routeParams,$location, service_example) {
             var Json_newsId = angular.toJson($routeParams.newsId);
             $http.post('viewnews', Json_newsId).then(
                 function (response) {
@@ -130,20 +135,34 @@
                 }
             );
             $scope.msg = "Edit News";
+
+            $scope.save = function() {
+                service_example.add_data($scope.news);
+                $location.path('/savechanges');
+            };
         });
 
-        app.controller('savechanges', function($scope) {
+        app.controller('savechanges', function($scope, service_example) {
             $scope.msg = "Saved News";
-
-
+            $scope.news = service_example.get_data();
         });
 
 
         app.controller('myCtrl', function($scope) {
-
             $scope.firstName = "John";
             $scope.lastName = "Doe";
             $scope.msg = "News Management";
+        });
+
+        app.service('service_example', function() {
+            var data;
+
+            this.add_data = function(param) {
+                data = param;
+            };
+            this.get_data = function() {
+                return data;
+            };
         });
 
     </script>
