@@ -55,19 +55,10 @@ public class NewsController {
         return newsDAO.getAllNews();
     }
 
-    @RequestMapping("/addnewspage")
-    public ModelAndView createNewsPage(@ModelAttribute("news") News news) {
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("addnews");
 
-        return mv;
-    }
-
-    @RequestMapping(value = "/addnews", method = RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
-    public ResponseEntity<News> createNews(@ModelAttribute("news") News news) {
+    @RequestMapping(value = "/addnews", method = RequestMethod.POST)
+    public void createNews(@RequestBody News news) {
         newsDAO.addNews(news);
-
-        return new ResponseEntity<News>(news, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/viewnews")
@@ -75,49 +66,26 @@ public class NewsController {
         return newsDAO.viewNews(newsId);
     }
 
-    /*
-    @RequestMapping(value = "/viewnews/{newsId}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public @ResponseBody
-    News viewNewsGET(@PathVariable("newsId") Long newsId) {
-
-        return newsDAO.viewNews(newsId);
-    }*/
-
     @RequestMapping(value = "/editnews", method = RequestMethod.POST)
     public @ResponseBody News editNews(@RequestBody  Long newsId) {
         return newsDAO.viewNews(newsId);
     }
 
     @RequestMapping(value = "/savechanges", method = RequestMethod.POST)
-    public ModelAndView saveChanges(@ModelAttribute("news") News news) {
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("newsisedited");
-
+    public void saveChanges(@RequestBody News news) {
         newsDAO.updateNews(news);
-
-        return mv;
     }
 
     @RequestMapping(value = "/deletenews", method = RequestMethod.POST)
-    public ModelAndView deleteNews(@RequestParam("newsId") Long newsId) {
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("newsisdeleted");
-
+    public void deleteNews(@RequestBody Long newsId) {
         newsDAO.deleteNews(newsId);
-
-        return mv;
     }
 
     @RequestMapping(value = "/deletesignednews", method = RequestMethod.POST)
-    public ModelAndView deleteSignedNews(@RequestParam("newsId[]") Long[] newsId) {
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("newsisdeleted");
-
+    public void deleteSignedNews(@RequestBody Long[] newsId) {
         for (long id : newsId) {
             newsDAO.deleteNews(id);
         }
-
-        return mv;
     }
 
 
