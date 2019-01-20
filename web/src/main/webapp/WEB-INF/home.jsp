@@ -46,7 +46,7 @@
                                     '</table>'+
                                     '<a href="#viewnews/{{news.id}}">View News</a>&nbsp&nbsp&nbsp'+
                                     '<a href="#editnews/{{news.id}}">Edit News</a>&nbsp&nbsp&nbsp'+
-                                    '<input type="checkbox" ng-model="news.id" name="newsId[]">'+
+                                    '<input type="checkbox" ng-checked="checkedNews.indexOf(news.id) != -1" ng-click="toggleCheck(news.id)" >'+
                                     '<br><br>'+
                                 '</div>'+
                                 '<button ng-click="deletesigned()">Delete</button>',
@@ -113,6 +113,11 @@
 
                     controller: "newsisadded"
                 })
+                .when("/newsisdeleted", {
+                    template:   '<h2>{{msg}}</h2>',
+
+                    controller: "newsisdeleted"
+                })
         });
 
 
@@ -129,12 +134,20 @@
             );
             $scope.msg = "News List";
 
-            $scope.deletesigned = function() {
-                console.log("delete signed");
-                console.log($location.search());
-                var Json_newsId = angular.toJson($scope.newsId);
-                $http.post("deletesignednews", Json_newsId);
+            $scope.checkedNews = [];
+            $scope.toggleCheck = function (news) {
+                if ($scope.checkedNews.indexOf(news) === -1) {
+                    $scope.checkedNews.push(news);
+                } else {
+                    $scope.checkedNews.splice($scope.checkedNews.indexOf(news), 1);
+                }
             };
+
+            $scope.deletesigned = function() {
+                var Json_newsId = angular.toJson($scope.checkedNews);
+                $http.post("deletesignednews", Json_newsId);
+                $location.path('/newsisdeleted');
+               };
 
         });
 
@@ -146,7 +159,6 @@
                 }
             );
             $scope.msg = "News";
-            console.log("view News");
         });
 
         app.controller('editnews', function($scope, $http, $routeParams,$location, service_example) {
@@ -192,6 +204,10 @@
 
         app.controller('newsisadded', function($scope) {
             $scope.msg = "News is added";
+        });
+
+        app.controller('newsisdeleted', function($scope) {
+            $scope.msg = "News is deleted";
         });
 
         app.service('service_example', function() {
