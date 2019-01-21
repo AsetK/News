@@ -98,11 +98,13 @@
                 })
                 .when("/addnews", {
                     template:   '<h2>{{msg}}</h2>'+
+                                '<h2>{{status}}</h2>'+
+                                '<h2>{{errorMessages}}</h2>'+
                                 '<table>'+
-                                '<tr><td>Title:     </td><td><input type="text" ng-model="news.title">                      </td></tr>'+
-                                '<tr><td>Brief:     </td><td><input type="text" ng-model="news.brief">                      </td></tr>'+
-                                '<tr><td>Content:   </td><td><input type="text" ng-model="news.content">                    </td></tr>'+
-                                '<tr><td>Date:      </td><td><input type="text" ng-model="news.date" datetime="dd-MM-yyyy"> </td></tr>'+
+                                '<tr><td>Title:     </td><td><input type="text" ng-model="news.title">                      </td><td>{{errorsMap["title"]}}     </td></tr>'+
+                                '<tr><td>Brief:     </td><td><input type="text" ng-model="news.brief">                      </td><td>{{errorsMap["brief"]}}       </td></tr>'+
+                                '<tr><td>Content:   </td><td><input type="text" ng-model="news.content">                    </td><td>{{errorsMap["content"]}}       </td></tr>'+
+                                '<tr><td>Date:      </td><td><input type="text" ng-model="news.date" datetime="dd-MM-yyyy"> </td><td>{{errorsMap["date"]}}       </td></tr>'+
                                 '</table>'+
                                 '<button ng-click="addandsave()">Save</button>',
 
@@ -195,10 +197,15 @@
 
             $scope.addandsave = function() {
                 var Json_news = angular.toJson($scope.news);
-                $http.post('addnews', Json_news);
-
-                service_example.add_data($scope.news);
-                $location.path('/newsisadded');
+                $http.post('addnews', Json_news).then(
+                    function (response) {
+                        service_example.add_data($scope.news);
+                        $location.path('/newsisadded');
+                    },
+                    function (errorResponse) {
+                        $scope.status = errorResponse.status;
+                        $scope.errorsMap = errorResponse.data;
+                    });
             };
         });
 

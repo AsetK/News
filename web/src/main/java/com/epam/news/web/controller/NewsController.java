@@ -8,10 +8,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -55,10 +62,18 @@ public class NewsController {
         return newsDAO.getAllNews();
     }
 
-
     @RequestMapping(value = "/addnews", method = RequestMethod.POST)
-    public void createNews(@RequestBody News news) {
-        newsDAO.addNews(news);
+    public ResponseEntity createNews(@Valid @RequestBody News news, BindingResult result) {
+        if(result.hasErrors()) {
+            Map<String,String> errorsMap = new HashMap<>();
+            result.getFieldErrors().stream().forEach(f -> errorsMap.put(f.getField(), f.getDefaultMessage()));
+
+            return new ResponseEntity(errorsMap, HttpStatus.BAD_REQUEST);
+        }
+        else {
+            newsDAO.addNews(news);
+            return new ResponseEntity(HttpStatus.OK);
+        }
     }
 
     @RequestMapping(value = "/viewnews")
@@ -72,7 +87,7 @@ public class NewsController {
     }
 
     @RequestMapping(value = "/savechanges", method = RequestMethod.POST)
-    public void saveChanges(@RequestBody News news) {
+    public void saveChanges(@Valid @RequestBody News news) {
         newsDAO.updateNews(news);
     }
 
