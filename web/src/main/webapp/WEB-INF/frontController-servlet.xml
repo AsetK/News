@@ -15,6 +15,14 @@
     <!-- For @DateTimeFormat -->
     <mvc:annotation-driven/>
 
+    <mvc:interceptors>
+        <!-- Localization Interceptor -->
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+            <property name="paramName" value="siteLanguage"/>
+        </bean>
+    </mvc:interceptors>
+
+
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix">
             <value>/WEB-INF/</value>
@@ -24,9 +32,12 @@
         </property>
     </bean>
 
-    <!-- MessageSource from property file -->
+    <!-- MessageSource from property file. For Localization -->
     <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-        <property name="basename" value="/WEB-INF/messages" />
+        <property name="basename" value="/WEB-INF/newsmessages" />
     </bean>
+
+    <!-- Localization -->
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver"/>
 
   </beans>

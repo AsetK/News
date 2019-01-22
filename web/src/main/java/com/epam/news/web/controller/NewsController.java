@@ -3,6 +3,7 @@ package com.epam.news.web.controller;
 
 import com.epam.news.dao.dao.NewsDAO;
 import com.epam.news.domain.entity.News;
+import com.epam.news.service.service.ValidationErrors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -65,12 +66,9 @@ public class NewsController {
     @RequestMapping(value = "/addnews", method = RequestMethod.POST)
     public ResponseEntity createNews(@Valid @RequestBody News news, BindingResult result) {
         if(result.hasErrors()) {
-            Map<String,String> errorsMap = new HashMap<>();
-            result.getFieldErrors().stream().forEach(f -> errorsMap.put(f.getField(), f.getDefaultMessage()));
-
-            return new ResponseEntity(errorsMap, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(ValidationErrors.getFieldMessages(result), HttpStatus.BAD_REQUEST);
         }
-        else {
+        else{
             newsDAO.addNews(news);
             return new ResponseEntity(HttpStatus.OK);
         }
@@ -81,14 +79,20 @@ public class NewsController {
         return newsDAO.viewNews(newsId);
     }
 
-    @RequestMapping(value = "/editnews", method = RequestMethod.POST)
+    @RequestMapping(value = "/editnews", method = RequestMethod.POST) //delete this, use viewnews
     public @ResponseBody News editNews(@RequestBody  Long newsId) {
         return newsDAO.viewNews(newsId);
     }
 
     @RequestMapping(value = "/savechanges", method = RequestMethod.POST)
-    public void saveChanges(@Valid @RequestBody News news) {
-        newsDAO.updateNews(news);
+    public ResponseEntity saveChanges(@Valid @RequestBody News news, BindingResult result) {
+        if(result.hasErrors()) {
+            return new ResponseEntity(ValidationErrors.getFieldMessages(result), HttpStatus.BAD_REQUEST);
+        }
+        else{
+            newsDAO.updateNews(news);
+            return new ResponseEntity(HttpStatus.OK);
+        }
     }
 
     @RequestMapping(value = "/deletenews", method = RequestMethod.POST)
