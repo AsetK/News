@@ -1,5 +1,6 @@
 package com.epam.news.service.service;
 
+import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
@@ -7,9 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ValidationErrors {
+@Service
+public class ValidationErrorsHandler {
 
-    public static Map<String, String> getFieldMessages(BindingResult result) {
+    public Map<String, String> getFieldMessages(BindingResult result) {
         Map<String,String> errorsMap = new HashMap<>();
 
         List<FieldError> errors = result.getFieldErrors();

@@ -3,23 +3,17 @@ package com.epam.news.web.controller;
 
 import com.epam.news.dao.dao.NewsDAO;
 import com.epam.news.domain.entity.News;
-import com.epam.news.service.service.ValidationErrors;
+import com.epam.news.service.service.ValidationErrorsHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Controller
@@ -27,6 +21,8 @@ public class NewsController {
 
     @Autowired
     NewsDAO newsDAO;
+    @Autowired
+    ValidationErrorsHandler errorsHandler;
 
     /*
     @RequestMapping(value = {"/", "/login"})
@@ -63,10 +59,15 @@ public class NewsController {
         return newsDAO.getAllNews();
     }
 
+    @RequestMapping(value = "/viewnews", method = RequestMethod.POST)
+    public @ResponseBody News viewNews(@RequestBody Long newsId) {
+        return newsDAO.viewNews(newsId);
+    }
+
     @RequestMapping(value = "/addnews", method = RequestMethod.POST)
-    public ResponseEntity createNews(@Valid @RequestBody News news, BindingResult result) {
+    public ResponseEntity addNews(@Valid @RequestBody News news, BindingResult result) {
         if(result.hasErrors()) {
-            return new ResponseEntity(ValidationErrors.getFieldMessages(result), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(errorsHandler.getFieldMessages(result), HttpStatus.BAD_REQUEST);
         }
         else{
             newsDAO.addNews(news);
@@ -74,20 +75,10 @@ public class NewsController {
         }
     }
 
-    @RequestMapping(value = "/viewnews")
-    public @ResponseBody News viewNewsPOST(@RequestBody Long newsId) {
-        return newsDAO.viewNews(newsId);
-    }
-
-    @RequestMapping(value = "/editnews", method = RequestMethod.POST) //delete this, use viewnews
-    public @ResponseBody News editNews(@RequestBody  Long newsId) {
-        return newsDAO.viewNews(newsId);
-    }
-
-    @RequestMapping(value = "/savechanges", method = RequestMethod.POST)
-    public ResponseEntity saveChanges(@Valid @RequestBody News news, BindingResult result) {
+    @RequestMapping(value = "/editnews", method = RequestMethod.POST)
+    public ResponseEntity editNews(@Valid @RequestBody News news, BindingResult result) {
         if(result.hasErrors()) {
-            return new ResponseEntity(ValidationErrors.getFieldMessages(result), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(errorsHandler.getFieldMessages(result), HttpStatus.BAD_REQUEST);
         }
         else{
             newsDAO.updateNews(news);
