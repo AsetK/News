@@ -194,7 +194,7 @@
             );
         });
 
-        app.controller('editnews', function($scope, $http, $routeParams) {
+        app.controller('editnews', function($scope, $http, $routeParams,$translate) {
             var Json_newsId = angular.toJson($routeParams.newsId);
             $http.post('viewnews', Json_newsId).then(
                 function (response) {
@@ -205,7 +205,7 @@
 
             $scope.save = function() {
                 var Json_news = angular.toJson($scope.news);
-                $http.post('editnews',Json_news).then(
+                $http.post('editnews?language=' + $translate.use(),Json_news).then(
                     function (response) {
                         $scope.msg = "label.newsIsEdited";
                     },
@@ -222,11 +222,12 @@
             $scope.msg = "label.newsIsDeleted";
         });
 
-        app.controller('addnews', function($scope, $http) {
+        app.controller('addnews', function($scope,$http,$translate) {
 
             $scope.addandsave = function() {
                 var Json_news = angular.toJson($scope.news);
-                $http.post('addnews', Json_news).then(
+
+                $http.post('addnews?language=' + $translate.use(), Json_news).then(
                     function (response) {
                         $scope.msg = "label.newsIsAdded";
                     },
@@ -236,7 +237,6 @@
                     });
             };
         });
-
 
         app.controller("translateController" ,["$scope","$translate",function($scope,$translate){
             $scope.changeLanguage = function(lang){

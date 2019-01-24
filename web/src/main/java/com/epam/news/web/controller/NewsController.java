@@ -5,6 +5,7 @@ import com.epam.news.dao.dao.NewsDAO;
 import com.epam.news.domain.entity.News;
 import com.epam.news.service.service.ValidationErrorsHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -23,9 +24,11 @@ public class NewsController {
     NewsDAO newsDAO;
     @Autowired
     ValidationErrorsHandler errorsHandler;
+    @Autowired
+    MessageSource messageSource;
 
-    /*
-    @RequestMapping(value = {"/", "/login"})
+
+    @RequestMapping("/login")
     public ModelAndView loginPage(@RequestParam(value = "error", required = false) String error) {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("login");
@@ -44,7 +47,6 @@ public class NewsController {
 
         return mv;
     }
-    */
 
     @RequestMapping("/")
     public ModelAndView homePage() {
@@ -65,9 +67,9 @@ public class NewsController {
     }
 
     @RequestMapping(value = "/addnews", method = RequestMethod.POST)
-    public ResponseEntity addNews(@Valid @RequestBody News news, BindingResult result) {
+    public ResponseEntity addNews(@Valid @RequestBody News news, BindingResult result, @RequestParam("language") String language) {
         if(result.hasErrors()) {
-            return new ResponseEntity(errorsHandler.getFieldMessages(result), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(errorsHandler.getFieldMessages(result, language), HttpStatus.BAD_REQUEST);
         }
         else{
             newsDAO.addNews(news);
@@ -76,9 +78,9 @@ public class NewsController {
     }
 
     @RequestMapping(value = "/editnews", method = RequestMethod.POST)
-    public ResponseEntity editNews(@Valid @RequestBody News news, BindingResult result) {
+    public ResponseEntity editNews(@Valid @RequestBody News news, BindingResult result, @RequestParam("language") String language) {
         if(result.hasErrors()) {
-            return new ResponseEntity(errorsHandler.getFieldMessages(result), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(errorsHandler.getFieldMessages(result, language), HttpStatus.BAD_REQUEST);
         }
         else{
             newsDAO.updateNews(news);
