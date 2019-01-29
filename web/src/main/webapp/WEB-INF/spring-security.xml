@@ -7,14 +7,16 @@
 		                    http://www.springframework.org/schema/security
 		                    http://www.springframework.org/schema/security/spring-security.xsd">
 
-
-
-    <http use-expressions="false" create-session="stateless">
+    
+    <http use-expressions="false" create-session="stateless" entry-point-ref="digestEntryPoint">
         <intercept-url pattern="/" access="ROLE_ADMIN, ROLE_USER" />
         <intercept-url pattern="/newslistpage"  access="ROLE_ADMIN"/>
         <intercept-url pattern="/addnews" access="ROLE_USER"/>
         <csrf disabled="true"></csrf>
-        <http-basic/>
+        <!--<http-basic/>-->
+
+        <!--There is no namespace for Digest Authentication, so we have to define beans explicitly-->
+        <custom-filter ref="digestFilter" after="BASIC_AUTH_FILTER" />
 
 
         <!--<form-login login-page="/login"-->
@@ -31,6 +33,18 @@
         <!--<remember-me remember-me-parameter="spring_security_remember_me" token-validity-seconds="86400"/>-->
     </http>
 
+    <beans:bean id="digestFilter" class=
+            "org.springframework.security.web.authentication.www.DigestAuthenticationFilter">
+        <beans:property name="userDetailsService" ref="jdbcUserService" />
+        <beans:property name="authenticationEntryPoint" ref="digestEntryPoint" />
+    </beans:bean>
+
+    <beans:bean id="digestEntryPoint" class=
+            "org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint">
+        <beans:property name="realmName" value="someRealm"/>
+        <beans:property name="key" value="anyKey" />
+    </beans:bean>
+
 
     <beans:bean id="passwordEncoder"
             class="org.springframework.security.crypto.password.NoOpPasswordEncoder" factory-method="getInstance"/>
@@ -42,7 +56,7 @@
                 <user name="admin" password="000" authorities="ROLE_ADMIN" />
                 <user name="user" password="111" authorities="ROLE_USER" />
             </user-service>*/-->
-            <jdbc-user-service data-source-ref="dataSource"/>
+            <jdbc-user-service data-source-ref="dataSource" id="jdbcUserService"/>
         </authentication-provider>
     </authentication-manager>
 
