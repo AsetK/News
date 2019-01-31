@@ -11,27 +11,18 @@
     <http use-expressions="false" create-session="stateless" entry-point-ref="digestEntryPoint">
         <intercept-url pattern="/" access="ROLE_ADMIN, ROLE_USER" />
         <intercept-url pattern="/newslistpage"  access="ROLE_ADMIN"/>
-        <intercept-url pattern="/addnews" access="ROLE_USER"/>
+        <intercept-url pattern="/viewnews"  access="ROLE_ADMIN"/>
+        <intercept-url pattern="/editnews"  access="ROLE_ADMIN"/>
+        <intercept-url pattern="/deletenews"  access="ROLE_ADMIN"/>
+        <intercept-url pattern="/deletesignednews"  access="ROLE_ADMIN"/>
+        <intercept-url pattern="/addnews" access="ROLE_ADMIN, ROLE_USER"/>
         <csrf disabled="true"></csrf>
-        <!--<http-basic/>-->
 
         <!--There is no namespace for Digest Authentication, so we have to define beans explicitly-->
         <custom-filter ref="digestFilter" after="BASIC_AUTH_FILTER" />
-
-
-        <!--<form-login login-page="/login"-->
-                    <!--login-processing-url="/j_spring_security_check"-->
-                    <!--default-target-url="/"-->
-                    <!--always-use-default-target="true"-->
-                    <!--username-parameter="user_login"-->
-                    <!--password-parameter="user_password"-->
-                    <!--authentication-failure-url="/login?error=true"/>-->
-
-        <!--<access-denied-handler error-page="/accessdenied"/>-->
-        <!--<logout logout-success-url="/login" logout-url="/j_spring_security_logout"/>-->
-
-        <!--<remember-me remember-me-parameter="spring_security_remember_me" token-validity-seconds="86400"/>-->
     </http>
+
+
 
     <beans:bean id="digestFilter" class=
             "org.springframework.security.web.authentication.www.DigestAuthenticationFilter">
@@ -45,17 +36,11 @@
         <beans:property name="key" value="anyKey" />
     </beans:bean>
 
-
     <beans:bean id="passwordEncoder"
             class="org.springframework.security.crypto.password.NoOpPasswordEncoder" factory-method="getInstance"/>
 
-
     <authentication-manager>
         <authentication-provider>
-            <!--<user-service>
-                <user name="admin" password="000" authorities="ROLE_ADMIN" />
-                <user name="user" password="111" authorities="ROLE_USER" />
-            </user-service>*/-->
             <jdbc-user-service data-source-ref="dataSource" id="jdbcUserService"/>
         </authentication-provider>
     </authentication-manager>

@@ -22,31 +22,13 @@ public class NewsController {
 
     @Autowired
     NewsDAO newsDAO;
+
     @Autowired
     ValidationErrorsHandler errorsHandler;
+
     @Autowired
     MessageSource messageSource;
 
-
-    @RequestMapping("/login")
-    public ModelAndView loginPage(@RequestParam(value = "error", required = false) String error) {
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("login");
-
-        if(error != null){
-            mv.addObject("error", "Invalid username or password");
-        }
-
-        return mv;
-    }
-
-    @RequestMapping("/accessdenied")
-    public ModelAndView accessDeniedPage() {
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("accessdenied");
-
-        return mv;
-    }
 
     @RequestMapping("/")
     public ModelAndView homePage() {
@@ -89,15 +71,17 @@ public class NewsController {
     }
 
     @RequestMapping(value = "/deletenews", method = RequestMethod.POST)
-    public void deleteNews(@RequestBody Long newsId) {
+    public ResponseEntity deleteNews(@RequestBody Long newsId) {
         newsDAO.deleteNews(newsId);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/deletesignednews", method = RequestMethod.POST)
-    public void deleteSignedNews(@RequestBody Long[] newsId) {
+    public ResponseEntity deleteSignedNews(@RequestBody Long[] newsId) {
         for (long id : newsId) {
             newsDAO.deleteNews(id);
         }
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 

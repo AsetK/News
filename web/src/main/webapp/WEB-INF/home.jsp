@@ -53,7 +53,8 @@
                     "label.brief"           : "Brief:",
                     "label.content"         : "Content:",
                     "label.date"            : "Date:",
-
+                    "403"                   : "Access is Forbidden!",
+                    "400"                   : "Incrorrect Format for Input Data!",
 
                 };
 
@@ -73,6 +74,8 @@
                     "label.brief"           : "Сводка:",
                     "label.content"         : "Содержание:",
                     "label.date"            : "Дата:",
+                    "403"                   : "Нет Доступа!",
+                    "400"                   : "Неправильный формат для входный данных!",
                 };
 
                 $translateProvider.translations('en',en_translations);
@@ -92,7 +95,8 @@
                     controller: "newsmanagement"
                 })
                 .when("/newslist", {
-                    template:   '<h2>{{"label.newsList" | translate}}</h2>'+
+                    template:   '<h2>{{status | translate}}</h2>'+
+                                '<h2>{{"label.newsList" | translate}}</h2>'+
                                 '<div ng-repeat="news in newslist">'+
                                     '<table>'+
                                         '<tr><td>{{"label.title" | translate}}     </td><td>{{news.title}}                      </td></tr>'+
@@ -110,7 +114,8 @@
                     controller: "newslist"
                 })
                 .when("/viewnews/:newsId", {
-                    template:   '<h2>{{"label.viewNews" | translate}}</h2>'+
+                    template:   '<h2>{{status | translate}}</h2>'+
+                                '<h2>{{"label.viewNews" | translate}}</h2>'+
                                 '<table>'+
                                     '<tr><td>{{"label.title" | translate}}     </td><td>{{news.title}}                      </td></tr>'+
                                     '<tr><td>{{"label.brief" | translate}}     </td><td>{{news.brief}}                      </td></tr>'+
@@ -123,7 +128,8 @@
                     controller: "viewnews"
                 })
                 .when("/editnews/:newsId", {
-                    template:   '<h2>{{"label.editNews" | translate}}</h2>'+
+                    template:   '<h2>{{status | translate}}</h2>'+
+                                '<h2>{{"label.editNews" | translate}}</h2>'+
                                 '<h2>{{msg | translate}}</h2>'+
                                 '<table>'+
                                     '<tr><td>{{"label.title" | translate}}      </td><td><input type="text" ng-model="news.title">                      </td><td>{{errorsMap["title"]}}    </td></tr>'+
@@ -137,12 +143,14 @@
                     controller: "editnews"
                 })
                 .when("/deletenews/:newsId", {
-                    template:   '<h2>{{msg | translate}}</h2>',
+                    template:   '<h2>{{status | translate}}</h2>'+
+                                '<h2>{{msg | translate}}</h2>',
 
                     controller: "deletenews"
                 })
                 .when("/addnews", {
-                    template:   '<h2>{{"label.addNews" | translate}}</h2>'+
+                    template:   '<h2>{{status | translate}}</h2>'+
+                                '<h2>{{"label.addNews" | translate}}</h2>'+
                                 '<h2>{{msg | translate}}</h2>'+
                                 '<table>'+
                                 '<tr><td>{{"label.title" | translate}}     </td><td><input type="text" ng-model="news.title">                      </td><td>{{errorsMap["title"]}}     </td></tr>'+
@@ -153,6 +161,11 @@
                                 '<button ng-click="addandsave()">{{"label.save" | translate}}</button>',
 
                     controller: "addnews"
+                })
+                .when("/newsisdeleted", {
+                    template:   '<h2>{{"label.newsIsDeleted" | translate}}</h2>',
+
+                    controller: "newsisdeleted"
                 })
 
         });
@@ -167,6 +180,9 @@
             $http.get('newslistpage').then(
                 function (response) {
                     $scope.newslist = response.data;
+                },
+                function (errorResponse) {
+                    $scope.status = errorResponse.status.toString();
                 }
             );
 
@@ -181,9 +197,14 @@
 
             $scope.deletesigned = function() {
                 var Json_newsId = angular.toJson($scope.checkedNews);
-                $http.post("deletesignednews", Json_newsId);
-                $location.path('/newsisdeleted');
-               };
+                $http.post("deletesignednews", Json_newsId).then(
+                    function (response) {
+                        $location.path('/newsisdeleted');
+                    },
+                    function (errorResponse) {
+                        $scope.status = errorResponse.status.toString();
+                    }
+                )};
         });
 
         app.controller('viewnews', function($scope, $http, $routeParams) {
@@ -191,6 +212,9 @@
             $http.post('viewnews', Json_newsId).then(
                 function (response) {
                     $scope.news = response.data;
+                },
+                function (errorResponse) {
+                    $scope.status = errorResponse.status.toString();
                 }
             );
         });
@@ -200,6 +224,9 @@
             $http.post('viewnews', Json_newsId).then(
                 function (response) {
                     $scope.news = response.data;
+                },
+                function (errorResponse) {
+                    $scope.status = errorResponse.status.toString();
                 }
             );
 
@@ -211,7 +238,7 @@
                         $scope.msg = "label.newsIsEdited";
                     },
                     function (errorResponse) {
-                        $scope.status = errorResponse.status;
+                        $scope.status = errorResponse.status.toString();
                         $scope.errorsMap = errorResponse.data;
                     });
             };
@@ -219,8 +246,14 @@
 
         app.controller('deletenews', function($scope, $http, $routeParams) {
             var Json_newsId = angular.toJson($routeParams.newsId);
-            $http.post('deletenews', Json_newsId);
-            $scope.msg = "label.newsIsDeleted";
+            $http.post('deletenews', Json_newsId).then(
+                function (response) {
+                    $scope.msg = "label.newsIsDeleted";
+                },
+                function (errorResponse) {
+                    $scope.status = errorResponse.status.toString();
+                });
+
         });
 
         app.controller('addnews', function($scope,$http,$translate) {
@@ -233,10 +266,14 @@
                         $scope.msg = "label.newsIsAdded";
                     },
                     function (errorResponse) {
-                        $scope.status = errorResponse.status;
+                        $scope.status = errorResponse.status.toString();
                         $scope.errorsMap = errorResponse.data;
                     });
             };
+        });
+
+        app.controller('newsisdeleted', function($scope) {
+            $scope.msg = "label.newsIsDeleted";
         });
 
         app.controller("translateController" ,["$scope","$translate",function($scope,$translate){
