@@ -1,122 +1,53 @@
 package com.epam.news.dao.dao;
 
 import com.epam.news.domain.entity.News;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Query;
+import java.util.Arrays;
 import java.util.List;
 
 @Repository
 public class NewsDAO {
 
+    @Autowired
+    SessionFactory sessionFactory;
+    private static final String NEWS_ID = "id";
+
+    @Transactional
     public void addNews(News news) {
-        Session session = null;
-        Transaction tx = null;
-        try {
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
-
-            tx = session.beginTransaction();
-            session.save(news);
-            tx.commit();
-        }
-        catch (Exception exc) {
-            if(tx!=null)
-                tx.rollback();
-            throw exc;
-        }
-        finally {
-            if(session!=null && session.isOpen())
-                session.close();
-        }
+        sessionFactory.getCurrentSession().save(news);
     }
 
+    @Transactional
     public News viewNews(Long newsId) {
-        News news;
-        Session session = null;
-        Transaction tx = null;
-        try {
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
-
-            tx = session.beginTransaction();
-            news = session.get(News.class, newsId);
-            tx.commit();
-        }
-        catch (Exception exc) {
-            if(tx!=null)
-                tx.rollback();
-            throw exc;
-        }
-        finally {
-            if(session!=null && session.isOpen())
-                session.close();
-        }
-        return news;
+        return sessionFactory.getCurrentSession().get(News.class, newsId);
     }
 
+    @Transactional
     public List<News> getAllNews()  {
-        Session session = null;
-        Transaction tx = null;
-        List newsList;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-
-            tx = session.beginTransaction();
-            newsList = session.createCriteria(News.class).list();
-            tx.commit();
-        }
-        catch (Exception exc) {
-            if(tx!=null)
-                tx.rollback();
-            throw exc;
-        }
-        finally {
-            if(session!=null && session.isOpen())
-                session.close();
-        }
-        return newsList;
+        return sessionFactory.getCurrentSession().createCriteria(News.class).list();
     }
 
+    @Transactional
     public void deleteNews(Long newsId) {
-        News news;
-        Session session = null;
-        Transaction tx = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-
-            tx = session.beginTransaction();
-            news = session.get(News.class, newsId);
-            session.delete(news);
-            tx.commit();
-        }
-        catch (Exception exc) {
-            if(tx!=null)
-                tx.rollback();
-            throw exc;
-        }
-        finally {
-            if(session!=null && session.isOpen())
-                session.close();
-        }
+        Query query = sessionFactory.getCurrentSession().createQuery("delete News where id =: id");
+        query.setParameter(NEWS_ID, newsId);
+        query.executeUpdate();
     }
 
+    @Transactional
+    public void deleteNews(Long[] newsId) {
+        Query query = sessionFactory.getCurrentSession().createQuery("delete News where id in (:id)");
+        ((org.hibernate.query.Query) query).setParameterList(NEWS_ID, newsId);
+        query.executeUpdate();
+    }
+
+    @Transactional
     public void updateNews(News news) {
-        Session session = null;
-        Transaction tx = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-            tx = session.beginTransaction();
-            session.update(news);
-            tx.commit();
-        }
-        catch (Exception exc) {
-            if(tx!=null)
-                tx.rollback();
-            throw exc;
-        }
-        finally {
-            if(session!=null && session.isOpen())
-                session.close();
-        }
+        sessionFactory.getCurrentSession().update(news);
     }
 }

@@ -78,9 +78,7 @@ public class NewsController {
 
     @RequestMapping(value = "/deletesignednews", method = RequestMethod.POST)
     public ResponseEntity deleteSignedNews(@RequestBody Long[] newsId) {
-        for (long id : newsId) {
-            newsDAO.deleteNews(id);
-        }
+        newsDAO.deleteNews(newsId);
         return new ResponseEntity(HttpStatus.OK);
     }
 
