@@ -15,6 +15,7 @@
     <ctx:annotation-config></ctx:annotation-config>
     <ctx:component-scan base-package="com.epam.news"></ctx:component-scan>
 
+    <!-- enable the configuration of transactional behavior based on annotations -->
     <tx:annotation-driven transaction-manager="txManager"/>
 
     <!-- For @DateTimeFormat -->

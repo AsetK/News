@@ -6,12 +6,14 @@
 
   <display-name>News</display-name>
 
+  <!-- Loads Spring Security config file -->
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener
     </listener-class>
   </listener>
 
-  <!-- Loads Spring Security config file -->
+  
+  <!--The context-param element contains the declaration of a web application's servlet context initialization parameters.-->
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>
