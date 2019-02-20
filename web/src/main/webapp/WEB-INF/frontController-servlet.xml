@@ -21,7 +21,8 @@
     <mvc:annotation-driven/>
 
     <mvc:interceptors>
-        <!-- Localization Interceptor -->
+        <!-- Localization Interceptor. Intercepts request parameter value from client. Parameter name in this example is siteLanguage -->
+        <!-- Doesn't used here, because we dont <spring:message code="..." in view/> -->
         <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
             <property name="paramName" value="siteLanguage"/>
         </bean>
@@ -42,13 +43,16 @@
         <property name="basename" value="/WEB-INF/newsmessages" />
     </bean>
 
-    <!-- Localization -->
+    <!-- Localization. It's mandatory for LocaleChangeInterceptor work. It's obtain current locale from cookie-->
+    <!-- Doesn't used here, because we dont <spring:message code="..." in view/> -->
     <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver"/>
 
+    <!-- For @Transactional annotation in DAO -->
     <bean id="txManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
+    <!-- SessionFactory bean for DAO -->
     <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan" value="com.epam.news.domain.entity"/>
