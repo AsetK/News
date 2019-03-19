@@ -17,12 +17,12 @@ public class ValidationErrorsHandler {
     @Autowired
     MessageSource messageSource;
 
-    public Map<String, String> getFieldMessages(BindingResult result, String language) {
+    public Map<String, String> getFieldMessages(BindingResult result, Locale locale) {
         Map<String,String> errorsMap = new HashMap<>();
 
         List<FieldError> errors = result.getFieldErrors();
         for(FieldError error: errors) {
-            errorsMap.put(error.getField(), messageSource.getMessage(error, new Locale(language)));
+            errorsMap.put(error.getField(), messageSource.getMessage(error, locale));
         }
 
         return errorsMap;

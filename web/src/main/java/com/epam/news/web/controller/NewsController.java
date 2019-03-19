@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Locale;
 
 
 @Controller
@@ -49,9 +50,9 @@ public class NewsController {
     }
 
     @RequestMapping(value = "/addnews", method = RequestMethod.POST)
-    public ResponseEntity addNews(@Valid @RequestBody News news, BindingResult result, @RequestParam("language") String language) {
+    public ResponseEntity addNews(@Valid @RequestBody News news, BindingResult result, Locale locale) {
         if(result.hasErrors()) {
-            return new ResponseEntity(errorsHandler.getFieldMessages(result, language), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(errorsHandler.getFieldMessages(result, locale), HttpStatus.BAD_REQUEST);
         }
         else{
             newsDAO.addNews(news);
@@ -60,14 +61,15 @@ public class NewsController {
     }
 
     @RequestMapping(value = "/editnews", method = RequestMethod.POST)
-    public ResponseEntity editNews(@Valid @RequestBody News news, BindingResult result, @RequestParam("language") String language) {
+    public ResponseEntity editNews(@Valid @RequestBody News news, BindingResult result, Locale locale) {
         if(result.hasErrors()) {
-            return new ResponseEntity(errorsHandler.getFieldMessages(result, language), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(errorsHandler.getFieldMessages(result, locale), HttpStatus.BAD_REQUEST);
         }
         else{
             newsDAO.updateNews(news);
             return new ResponseEntity(HttpStatus.OK);
         }
+
     }
 
     @RequestMapping(value = "/deletenews", method = RequestMethod.POST)
